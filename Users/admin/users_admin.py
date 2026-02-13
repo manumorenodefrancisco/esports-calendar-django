@@ -5,7 +5,8 @@ from Users.models import User
 
 
 class CustomUserAdmin(UserAdmin):
-    list_display = ("email", "username", "role__name", "is_active", 'is_staff', "is_superuser")
+    #    list_display = ("email", "username", "role__name", "is_active", 'is_staff', "is_superuser")
+    list_display = ("email", "username", "is_active", 'is_staff', "is_superuser")
     list_filter = ("is_active", 'is_superuser')
     search_fields = ("email", "first_name")
     ordering = ("-email", 'is_superuser')
@@ -14,7 +15,8 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = (
         ("Inicio de sesión", {
             "classes": ("wide",),
-            "fields": ("email", "password", "role"),
+            "fields": ("email", "password"),
+            #"fields": ("email", "password", "role"),
         }),
         ("Información personal", {
             "classes": ("wide",),
@@ -25,7 +27,8 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         ("Inicio de sesión", {
             "classes": ("wide",),
-            "fields": ("email", "password1", "password2", "role"),
+            "fields": ("email", "password1", "password2"),
+            #"fields": ("email", "password1", "password2", "role"),
         }),
         ("Información personal", {
             "classes": ("wide",),

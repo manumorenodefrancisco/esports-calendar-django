@@ -41,7 +41,6 @@ else:
 INSTALLED_APPS = [
     # Con esto especificamos que se deben de leer los headers de las peticiones
     'corsheaders',
-    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

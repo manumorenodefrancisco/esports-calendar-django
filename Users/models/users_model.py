@@ -60,9 +60,8 @@ class User(PermissionsMixin, AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False, verbose_name="¿Es super usuario?")
 
-    role = models.ForeignKey("Role", on_delete=models.SET_NULL, null=True, blank=True,
-                             verbose_name="Rol de usuario",
-                             help_text="(Obligatorio)")
+    #role = models.ForeignKey("Role", on_delete=models.SET_NULL, null=True, blank=True,
+     #                        verbose_name="Rol de usuario", help_text="(Obligatorio)")
 
     objects = UserManager()
     USERNAME_FIELD = 'email'
