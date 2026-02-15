@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from Users.serializers import LoginSerializer
 
 
-class LoginView(APIView):
+class LoginView(APIView): #viewsets.ModelViewSet
     permission_classes = [AllowAny]
 
     def post(self, request):

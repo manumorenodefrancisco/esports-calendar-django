@@ -17,7 +17,7 @@ Descargamos:
         - delete -> Funciona con POST lo unico que este se utiliza solo para borrar datos
 """
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -26,7 +26,7 @@ from Users.serializers import RegisterSerializer
 
 
 class PruebaView(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         # SELECT * FROM User

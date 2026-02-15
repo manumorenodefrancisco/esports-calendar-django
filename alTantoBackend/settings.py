@@ -114,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Lo que hacemos es dar a entender a django que nuestro principal token de auth será un JWT
+# Lo que hacemos es dar a entender a django que nuestro principal token de auth será un JWT, no sesiones normales
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
