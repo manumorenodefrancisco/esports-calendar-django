@@ -50,15 +50,14 @@ class User(PermissionsMixin, AbstractBaseUser):
                               help_text="(Obligatorio)")
     username = models.CharField(max_length=50, unique=True, null=False, blank=False, help_text="(Obligatorio)")
 
-    first_name = models.CharField(max_length=100, null=False, blank=False, verbose_name="Nombre",
-                                  help_text="(Obligatorio)")
-    last_name = models.CharField(max_length=100, null=False, blank=False, verbose_name="Apellidos",
-                                 help_text="(Obligatorio)")
+    name = models.CharField(max_length=100, null=False, blank=False, verbose_name="Nombre")
 
     is_active = models.BooleanField(default=True, verbose_name="¿Está activo?")
 
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False, verbose_name="¿Es super usuario?")
+
+    created_at = models.DateField(verbose_name="Fecha creación", null=True, blank=True)
 
     #role = models.ForeignKey("Role", on_delete=models.SET_NULL, null=True, blank=True,
      #                        verbose_name="Rol de usuario", help_text="(Obligatorio)")
@@ -69,19 +68,19 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     class Meta:
         db_table = 'users'
-        ordering = ('-email',)
+        ordering = ('-created_at',)#('-email')
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
 
     def save(self, *args, **kwargs):
         if not self.username:
-            self.username = f"{slugify(self.first_name)}-{slugify(self.last_name)}-{self.email[:3].upper()}"
+            self.username = f"{slugify(self.name)}-{self.email[:3].upper()}"
         super().save(*args, **kwargs)
 
     def __str__(self):
-        nombre = f"{self.first_name} {self.last_name}" if self.first_name and self.last_name else "DESCONOCIDO"
+        nombre = f"{self.name}" if self.name else "DESCONOCIDO"
         return f"[{self.id}] {nombre} ({self.email})"
 
     def get_full_name(self):
-        return f"{self.first_name} {self.last_name}" if self.first_name and self.last_name else "DESCONOCIDO"
+        return f"{self.name}" if self.name else "DESCONOCIDO"
 

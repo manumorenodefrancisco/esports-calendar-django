@@ -6,10 +6,10 @@ from Users.models import User
 
 class CustomUserAdmin(UserAdmin):
     #    list_display = ("email", "username", "role__name", "is_active", 'is_staff', "is_superuser")
-    list_display = ("email", "username", "is_active", 'is_staff', "is_superuser")
+    list_display = ("email", "username", "is_active", 'is_staff', "is_superuser", "created_at")
     list_filter = ("is_active", 'is_superuser')
-    search_fields = ("email", "first_name")
-    ordering = ("-email", 'is_superuser')
+    search_fields = ("email", "name")
+    ordering = ("-created_at","-email", 'is_superuser')
     readonly_fields = ("username",)
 
     fieldsets = (
@@ -20,7 +20,7 @@ class CustomUserAdmin(UserAdmin):
         }),
         ("Información personal", {
             "classes": ("wide",),
-            "fields": ("username", "first_name", "last_name", "is_active", "is_staff", "is_superuser"),
+            "fields": ("username", "name", "is_active", "is_staff", "is_superuser"),
         })
     )
 
@@ -32,7 +32,7 @@ class CustomUserAdmin(UserAdmin):
         }),
         ("Información personal", {
             "classes": ("wide",),
-            "fields": ("username", "first_name", "last_name", "is_active", "is_staff", "is_superuser"),
+            "fields": ("username", "name", "is_active", "is_staff", "is_superuser"),
         })
     )
 

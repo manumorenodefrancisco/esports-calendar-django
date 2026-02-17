@@ -32,17 +32,17 @@ class PruebaView(APIView):
         # SELECT * FROM User
         usuarios = User.objects.all()  # Con esta consulta tenemos un array de objetos de tipo usuario
 
-        # SELECT * FROM User ORDER BY first_name ASC
-        usuarios2 = User.objects.all().order_by("-first_name")
+        # SELECT * FROM User ORDER BY name ASC
+        usuarios2 = User.objects.all().order_by("-name")
 
-        # SELECT * FROM User WHERE is_active=True AND is_staff=True ORDER BY first_name ASC
-        usuarios3 = User.objects.filter(is_active=True, is_staff=True).order_by("-first_name")
+        # SELECT * FROM User WHERE is_active=True AND is_staff=True ORDER BY name ASC
+        usuarios3 = User.objects.filter(is_active=True, is_staff=True).order_by("-name")
 
         # data = []
         # for usuario in usuarios:
-        #     data.append({"email": usuario.email, "first_name": usuario.first_name, "last_name": usuario.last_name})
+        #     data.append({"email": usuario.email, "name": usuario.name})
 
-        data2 = [{"email": usuario.email,"first_name": usuario.first_name,"last_name": usuario.last_name} for usuario in usuarios3]
+        data2 = [{"email": usuario.email,"name": usuario.name} for usuario in usuarios3]
 
         return Response(
             {"success": True, "data": data2}, status=status.HTTP_200_OK)
@@ -53,7 +53,7 @@ class RegisterView(APIView):
 
     def post(self, request):
         # Si queremos acceder a los elementos del body, usamos request.data
-        # request.data = {'email': 'pepe@gmail.com', 'username': 'pepe_97', 'first_name': 'Pepe', 'last_name': 'Perez'}
+        # request.data = {'email': 'pepe@gmail.com', 'username': 'pepe_97', 'name': 'Pepe'}
         data = request.data
         serializer = RegisterSerializer(data=data)
         if serializer.is_valid():

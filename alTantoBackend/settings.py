@@ -51,7 +51,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     # Instancia de APPS Creadas
-    'Users'
+    'Users',
+    'Events',
+    'Preferences',
+    'Subscriptions'
 ]
 
 MIDDLEWARE = [
