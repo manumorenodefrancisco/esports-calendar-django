@@ -20,4 +20,23 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/", include("Users.urls")),  # http://localhost:8000/api/
+    path("api/", include("Events.urls")),
+    path("api/", include("Preferences.urls")),
+    path("api/", include("Subscriptions.urls")),
 ]
+
+"""
+POST   /api/auth/register
+POST   /api/auth/login
+
+GET    /api/events/
+GET    /api/events/?videojuego=lol
+
+GET    /api/subscriptions/
+POST   /api/subscriptions/
+DELETE /api/subscriptions/{id}/
+
+GET    /api/preferences/
+
+PUT    /api/auth/update-token/
+"""
