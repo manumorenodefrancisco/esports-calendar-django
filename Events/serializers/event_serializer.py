@@ -15,6 +15,5 @@ class EventoSerializer(serializers.ModelSerializer):
             "fecha_inicio",
             "fecha_fin",
             "color",
-            "created_at"
         ]
-        read_only_fields = ["id", "created_at"]
+        read_only_fields = ["id", "external_id", "created_at"]

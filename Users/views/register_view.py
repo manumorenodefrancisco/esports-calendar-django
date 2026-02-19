@@ -1,13 +1,11 @@
 """
-Descargamos:
-    - djangorestframework
-    - djangorestframework-simplejwt
-    - django-cors-headers
+Descargar estas librerías:
+    - djangorestframework: Herramienta principal para construir APIs robustas y navegables en Django.
+    - djangorestframework-simplejwt: Proporciona autenticación mediante 'JSON Web Tokens' para asegurar tu API.
+    - django-cors-headers: Maneja el intercambio de recursos de origen cruzado (CORS) para permitir que apps
+            externas (front) consuman tu API. Aporta los permisos a peticiones desde otro dominio.
 
-    comandos:
-        - pip install djangorestframework
-        - pip install djangorestframework-simplejwt
-        - pip install django-cors-headers
+comando -> pip install djangorestframework djangorestframework-simplejwt django-cors-headers
 
     Métodos de solicitudes:
         - get -> Genérico, pero no encripta datos
@@ -29,23 +27,17 @@ class PruebaView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # SELECT * FROM User
-        usuarios = User.objects.all()  # Con esta consulta tenemos un array de objetos de tipo usuario
-
-        # SELECT * FROM User ORDER BY name ASC
-        usuarios2 = User.objects.all().order_by("-name")
-
-        # SELECT * FROM User WHERE is_active=True AND is_staff=True ORDER BY name ASC
-        usuarios3 = User.objects.filter(is_active=True, is_staff=True).order_by("-name")
+        # SELECT * FROM User WHERE is_active=True AND is_staff=True ORDER BY first_name DESC
+        usuarios_staff = User.objects.filter(is_active=True, is_staff=True).order_by("first_name")
 
         # data = []
         # for usuario in usuarios:
-        #     data.append({"email": usuario.email, "name": usuario.name})
+        #     data.append({"username": usuario.username, "email": usuario.email})
 
-        data2 = [{"email": usuario.email,"name": usuario.name} for usuario in usuarios3]
+        data = [{"username": usuario.username, "email": usuario.email} for usuario in usuarios_staff]
 
         return Response(
-            {"success": True, "data": data2}, status=status.HTTP_200_OK)
+            {"success": True, "data": data}, status=status.HTTP_200_OK)
 
 
 class RegisterView(APIView):
@@ -53,7 +45,7 @@ class RegisterView(APIView):
 
     def post(self, request):
         # Si queremos acceder a los elementos del body, usamos request.data
-        # request.data = {'email': 'pepe@gmail.com', 'username': 'pepe_97', 'name': 'Pepe'}
+        # request.data = {'email': 'pepe@gmail.com', 'username': 'pepe_97', 'first_name'....}
         data = request.data
         serializer = RegisterSerializer(data=data)
         if serializer.is_valid():

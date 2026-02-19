@@ -1,3 +1,5 @@
+import secrets
+
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
@@ -50,15 +52,13 @@ class User(PermissionsMixin, AbstractBaseUser):
                               help_text="(Obligatorio)")
     username = models.CharField(max_length=50, unique=True, null=False, blank=False, help_text="(Obligatorio)")
 
-    name = models.CharField(max_length=100, null=False, blank=False, verbose_name="Nombre")
-
     is_active = models.BooleanField(default=True, verbose_name="¿Está activo?")
 
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False, verbose_name="¿Es super usuario?")
 
-    created_at = models.DateField(verbose_name="Fecha creación", null=True, blank=True)
-
+    created_at = models.DateTimeField(verbose_name="Fecha creación", null=True, blank=True)
+    notification_token = models.CharField(max_length=250, unique=True, null=True, blank=True, verbose_name="Token de notificación")
     #role = models.ForeignKey("Role", on_delete=models.SET_NULL, null=True, blank=True,
      #                        verbose_name="Rol de usuario", help_text="(Obligatorio)")
 
@@ -74,13 +74,12 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     def save(self, *args, **kwargs):
         if not self.username:
-            self.username = f"{slugify(self.name)}-{self.email[:3].upper()}"
+            prov = f"{self.email[:4].upper()}-{secrets.token_hex(2)}"
+            while User.objects.filter(username=prov).exists():
+                prov = f"{self.email[:4].upper()}-{secrets.token_hex(3)}"
+            self.username = prov
         super().save(*args, **kwargs)
 
     def __str__(self):
-        nombre = f"{self.name}" if self.name else "DESCONOCIDO"
-        return f"[{self.id}] {nombre} ({self.email})"
-
-    def get_full_name(self):
-        return f"{self.name}" if self.name else "DESCONOCIDO"
+        return f"[{self.id}] {self.username} - {self.email}"
 

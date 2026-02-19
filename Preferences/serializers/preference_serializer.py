@@ -12,11 +12,13 @@ class PreferenciaSerializer(serializers.ModelSerializer):
             "tipo_evento",
             "puntaje_interes",
             "total_suscripciones",
-            "ultima_actualizacion"
+            "ultima_actualizacion",
+            "created_at"
         ]
         read_only_fields = [
             "id",
             "puntaje_interes",
             "total_suscripciones",
-            "ultima_actualizacion"
+            "ultima_actualizacion",
+            "created_at"
         ]

@@ -12,7 +12,6 @@ class SuscripcionSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "evento",
-            "evento_id",
             "recordatorio_1_dia",
             "recordatorio_1_hora",
             "created_at"
@@ -24,7 +23,5 @@ class SuscripcionSerializer(serializers.ModelSerializer):
         evento_id = validated_data.pop("evento_id")
 
         return Suscripcion.objects.create(
-            usuario=usuario,
-            evento_id=evento_id,
-            **validated_data
+            usuario=usuario, evento_id=evento_id, **validated_data
         )
