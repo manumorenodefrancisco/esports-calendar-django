@@ -8,6 +8,7 @@ class Preferencia(models.Model):
 
     videojuego = models.CharField(max_length=100)
     #videojuego = models.CharField(null=True, blank=True)
+    #artista
     tipo_evento = models.CharField(max_length=100)
 
     puntaje_interes = models.FloatField(default=0)

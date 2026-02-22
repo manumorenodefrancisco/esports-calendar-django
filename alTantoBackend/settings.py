@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     #Para que django sepa que vamos a trabajar con servicios API REST
     'rest_framework',
     'rest_framework_simplejwt',
+    #para que tras logout no siga funcionando el refresh token
+    'rest_framework_simplejwt.token_blacklist',
     # Instancia de APPS Creadas
     'Users',
     'Events',
@@ -126,9 +128,10 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=2),
     "AUTH_HEADER_TYPES": ("Bearer",),
-    "ROTATE_REFRESH_TOKEN": False,
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
 }

@@ -42,9 +42,8 @@ class LoginSerializer(serializers.ModelSerializer):
 
         # Si coincide, iniciamos sesión
 
-        if not user:  # Si user no es None
-            raise serializers.ValidationError("El usuario no existe")
-
+        if not user:  # Si user es None
+            raise serializers.ValidationError("Usuario o contraseña incorrecto")
         if not user.check_password(attrs["password"]):  # Si las contraseñas no coinciden
             raise serializers.ValidationError("Usuario o contraseña incorrecto")
 
@@ -56,7 +55,7 @@ class LoginSerializer(serializers.ModelSerializer):
             "success": True,
             "data": {
                 "refreshToken": str(refresh),
-                "token": str(refresh.access_token),
+                "token": str(refresh.access_token), #al hacer esto se crea otro token, mas cortoy con username dentro porque hereda del refresh token creado
                 "email": user.email,
                 "username": user.username
             }

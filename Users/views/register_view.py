@@ -8,8 +8,8 @@ Descargar estas librerías:
 comando -> pip install djangorestframework djangorestframework-simplejwt django-cors-headers
 
     Métodos de solicitudes:
-        - get -> Genérico, pero no encripta datos
-        - post -> Genérico y encripta datos
+        - get -> Genérico, pero no encripta datos. Para datos en la URL -> request.query_params
+        - post -> Genérico y encripta datos. Para datos en el cuerpo -> request.data
         - put -> Crear elementos y funciona a través de POST
         - patch -> Lo utilizamos para actualizar uno o varios valores, pero no todos y funciona con POST.
         - delete -> Funciona con POST lo unico que este se utiliza solo para borrar datos
