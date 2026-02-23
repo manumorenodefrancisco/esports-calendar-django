@@ -7,9 +7,7 @@ class Preferencia(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
     videojuego = models.CharField(max_length=100)
-    #videojuego = models.CharField(null=True, blank=True)
-    #artista
-    tipo_evento = models.CharField(max_length=100)
+    player = models.CharField(max_length=100) # el winner_id de algun match al que este suscrito
 
     puntaje_interes = models.FloatField(default=0)
     total_suscripciones = models.IntegerField(default=0)

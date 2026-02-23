@@ -8,6 +8,7 @@ class EventoSerializer(serializers.ModelSerializer):
         model = Evento
         fields = [
             "id",
+            "match_name",
             "external_id",
             "scheduled_at",
             "videogame_name",
@@ -21,6 +22,7 @@ class EventoSerializer(serializers.ModelSerializer):
             "results",
             "winner_id",
             "streams",
+            "end_at",
             "created_at",
             "updated_at",
         ]

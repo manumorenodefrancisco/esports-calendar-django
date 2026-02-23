@@ -9,7 +9,6 @@ class PreferenciaSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "videojuego",
-            "tipo_evento",
             "puntaje_interes",
             "total_suscripciones",
             "ultima_actualizacion",

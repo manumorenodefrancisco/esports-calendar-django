@@ -31,6 +31,8 @@ tarjeta pero con un poco más de información llamando al endpoint endpoint 'GET
 ### Datos de la tarjeta (RecyclerView)
 Los datos que se mostrarán en cada tarjetita de match del recyclerview al pinchar en un día del calendar serán:
 - scheduled_at
+- id
+- name
 - league.name
 - tournament.name
 - serie.full_name
@@ -55,7 +57,9 @@ Estos son los datos que nos interesan que vienen de un match de ejemplo (https:/
 pero solo nos interesan estos:
 
 ```json
-{
+{   
+    "id": 636351,
+    "name": "MAD vs FNC",
     "scheduled_at": "2022-06-24T22:00:00Z",
     "league": {
         "name": "LEC"
