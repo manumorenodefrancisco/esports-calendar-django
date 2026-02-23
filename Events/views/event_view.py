@@ -74,7 +74,7 @@ class EventView(APIView):
                     scheduled_at__date=parsed_date
                 )
 
-        query_eventos = query_eventos.order_by('scheduled_at')[:100]
+        query_eventos = query_eventos.order_by('scheduled_at')[:500]
 
         serializer = EventoSerializer(query_eventos, many=True)
 
@@ -98,41 +98,77 @@ class EventView(APIView):
             "Authorization": f"Bearer {self.TOKEN}"
         }
 
-        # RUNNING + UPCOMING
-        url_matches = f"{self.PANDASCORE_BASE}/matches?filter[status]=running,not_started&sort=begin_at"
-        response = requests.get(url_matches, headers=headers)
-        if response.status_code == 200:
+        # UPCOMING
+        contador_events = 0
+        page = 1
+        while contador_events < 500:
+            url_matches = f"{self.PANDASCORE_BASE}/matches/upcoming?page[size]=100&page[number]={page}&sort=scheduled_at"
+            response = requests.get(url_matches, headers=headers)
+            if response.status_code != 200:
+                break
+
             matches = response.json()
+            if not matches:
+                break
+
             for match in matches:
                 self.save_or_update_match(match)
+                contador_events+=1
+
+            page += 1
+
+        # RUNNING
+        page = 1
+        while True:
+            url_matches = f"{self.PANDASCORE_BASE}/matches/running?page[size]=100&page[number]={page}&sort=scheduled_at"
+            response = requests.get(url_matches, headers=headers)
+            if response.status_code != 200:
+                break
+
+            matches = response.json()
+            if not matches:
+                break
+
+            for match in matches:
+                self.save_or_update_match(match)
+
+            page += 1
 
         # PAST última hora
         now = datetime.utcnow()
         one_hour_ago = now - timedelta(minutes=60)
 
-        url_range = f"{self.PANDASCORE_BASE}/matches/past?range[end_at]={one_hour_ago.isoformat()}Z,{now.isoformat()}Z"
-        response_past = requests.get(url_range, headers=headers)
+        page = 1
+        while True:
+            url_matches = f"{self.PANDASCORE_BASE}/matches/past?range[end_at]={one_hour_ago.isoformat()}Z,{now.isoformat()}Z&page[size]=100&page[number]={page}&sort=scheduled_at"
+            response = requests.get(url_matches, headers=headers)
+            if response.status_code != 200:
+                break
 
-        if response_past.status_code == 200:
-            past_matches = response_past.json()
-            for match in past_matches:
+            matches = response.json()
+            if not matches:
+                break
+
+            for match in matches:
                 self.save_or_update_match(match)
 
-        # INCIDENTS
-        incidents_url = f"{self.PANDASCORE_BASE}/incidents"
-        response_incidents = requests.get(incidents_url, headers=headers)
+            page += 1
 
-        if response_incidents.status_code == 200:
-            incidents = response_incidents.json()
-            for incident in incidents:
-                object_id = incident.get("object_id")
-                type_ = incident.get("type")
+    """ # INCIDENTS
+            incidents_url = f"{self.PANDASCORE_BASE}/incidents"
+            response_incidents = requests.get(incidents_url, headers=headers)
 
-                if type_ in ["add", "update"]:
-                    self.traer_match_por_id(object_id)
+            if response_incidents.status_code == 200:
+                incidents = response_incidents.json()
+                for incident in incidents:
+                    object_id = incident.get("object_id")
+                    type_ = incident.get("type")
 
-                elif type_ == "delete":
-                    Evento.objects.filter(external_id=object_id).delete()
+                    if type_ in ["add", "update"]:
+                        self.traer_match_por_id(object_id)
+
+                    elif type_ == "delete":
+                        Evento.objects.filter(external_id=object_id).delete()"""
 
 
     def traer_match_por_id(self, match_id):
