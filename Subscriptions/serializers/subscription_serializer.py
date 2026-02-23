@@ -12,6 +12,7 @@ class SuscripcionSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "evento",
+            "evento_id",
             "recordatorio_1_dia",
             "recordatorio_1_hora",
             "created_at"

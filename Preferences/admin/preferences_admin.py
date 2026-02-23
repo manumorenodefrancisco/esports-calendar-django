@@ -3,7 +3,8 @@ from django.contrib import admin
 
 @admin.register(Preferencia)
 class PreferencesAdmin(admin.ModelAdmin):
-    list_display = ('usuario__username', 'videojuego', 'puntaje_interes', 'total_suscripciones', 'ultima_actualizacion')
-    list_filter = ('videojuego', 'puntaje_interes')
-    search_fields = ('usuario__username', 'videojuego', 'puntaje_interes')
-    ordering = ('created_at',)
+    list_display = ('usuario', 'tipo_preferencia', 'valor', 'puntaje_interes', 'frecuencia', 'ultima_actualizacion')
+    list_filter = ('tipo_preferencia', 'usuario')
+    search_fields = ('valor', 'usuario__username')
+    ordering = ('-puntaje_interes', '-frecuencia')
+    readonly_fields = ('created_at', 'ultima_actualizacion')

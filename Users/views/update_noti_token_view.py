@@ -44,10 +44,13 @@ class UpdateNotiTokenView(APIView):
                 "message": "Token de notificación guardado correctamente"
             }, status=status.HTTP_200_OK)
         else:
+            errores = []
+            for error in serializer.errors.values():
+                for e in error:
+                    errores.append(e)
             return Response({
                 "success": False,
-                "message": "Error al validar el token",
-                "errors": serializer.errors
+                "errors": errores
             }, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):

@@ -8,7 +8,7 @@ from django.utils.dateparse import parse_date
 
 from rest_framework import permissions, status
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.views import APIView, View
 
 from Events.models import Evento
 from Events.serializers import EventoSerializer
@@ -17,12 +17,7 @@ from Events.serializers import EventoSerializer
 class EventView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    PANDASCORE_BASE = "https://api.pandascore.co"
-    TOKEN = settings.PANDASCORE_TOKEN
-
     def get(self, request):
-
-        self.sync_pandascore()
 
         query_eventos = Evento.objects.all()
 
@@ -35,7 +30,7 @@ class EventView(APIView):
                 serializer = EventoSerializer(evento)
                 return Response({"success": True, "data": serializer.data})
             except Evento.DoesNotExist:
-                return Response({"success": False, "message": "Evento no encontrado"},
+                return Response({"success": False, "errors": ["Evento no encontrado"]},
                                 status=status.HTTP_404_NOT_FOUND)
 
         # por external_id
@@ -84,9 +79,12 @@ class EventView(APIView):
             "count": query_eventos.count()
         })
 
+    PANDASCORE_BASE = "https://api.pandascore.co"
+    TOKEN = settings.PANDASCORE_TOKEN
+
     def sync_pandascore(self):
 
-        #limpiar matches viejos
+        # limpiar matches viejos
         now = timezone.now()
         one_hour_ago = now - timedelta(minutes=60)
         Evento.objects.filter(
@@ -113,7 +111,7 @@ class EventView(APIView):
 
             for match in matches:
                 self.save_or_update_match(match)
-                contador_events+=1
+                contador_events += 1
 
             page += 1
 
@@ -154,8 +152,10 @@ class EventView(APIView):
 
             page += 1
 
-    """ # INCIDENTS
-            incidents_url = f"{self.PANDASCORE_BASE}/incidents"
+        """# INCIDENTS
+        page = 1
+        while True:
+            incidents_url = f"{self.PANDASCORE_BASE}/incidents&page[size]=100&page[number]={page}"
             response_incidents = requests.get(incidents_url, headers=headers)
 
             if response_incidents.status_code == 200:
@@ -168,8 +168,8 @@ class EventView(APIView):
                         self.traer_match_por_id(object_id)
 
                     elif type_ == "delete":
-                        Evento.objects.filter(external_id=object_id).delete()"""
-
+                        Evento.objects.filter(external_id=object_id).delete()
+            page += 1"""
 
     def traer_match_por_id(self, match_id):
         headers = {
@@ -186,7 +186,7 @@ class EventView(APIView):
     def save_or_update_match(self, match):
 
         opponents = []
-        for opp in match.get("opponents", []): #(clave, default value)
+        for opp in match.get("opponents", []):  # (clave, default value)
             opponent = opp.get("opponent")
             if opponent:
                 opponents.append({

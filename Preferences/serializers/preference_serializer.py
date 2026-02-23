@@ -8,16 +8,20 @@ class PreferenciaSerializer(serializers.ModelSerializer):
         model = Preferencia
         fields = [
             "id",
-            "videojuego",
+            "tipo_preferencia",
+            "valor",
+            "valor_id",
             "puntaje_interes",
-            "total_suscripciones",
+            "frecuencia",
+            "total_suscripciones_usuario",
             "ultima_actualizacion",
             "created_at"
         ]
         read_only_fields = [
             "id",
             "puntaje_interes",
-            "total_suscripciones",
+            "frecuencia",
+            "total_suscripciones_usuario",
             "ultima_actualizacion",
             "created_at"
         ]
