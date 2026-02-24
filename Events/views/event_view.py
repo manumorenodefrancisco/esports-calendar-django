@@ -96,6 +96,23 @@ class EventView(APIView):
             "Authorization": f"Bearer {self.TOKEN}"
         }
 
+        # RUNNING
+        page = 1
+        while True:
+            url_matches = f"{self.PANDASCORE_BASE}/matches/running?page[size]=100&page[number]={page}&sort=scheduled_at"
+            response = requests.get(url_matches, headers=headers)
+            if response.status_code != 200:
+                break
+
+            matches = response.json()
+            if not matches:
+                break
+
+            for match in matches:
+                self.save_or_update_match(match)
+
+            page += 1
+
         # UPCOMING
         contador_events = 0
         page = 1
@@ -112,23 +129,6 @@ class EventView(APIView):
             for match in matches:
                 self.save_or_update_match(match)
                 contador_events += 1
-
-            page += 1
-
-        # RUNNING
-        page = 1
-        while True:
-            url_matches = f"{self.PANDASCORE_BASE}/matches/running?page[size]=100&page[number]={page}&sort=scheduled_at"
-            response = requests.get(url_matches, headers=headers)
-            if response.status_code != 200:
-                break
-
-            matches = response.json()
-            if not matches:
-                break
-
-            for match in matches:
-                self.save_or_update_match(match)
 
             page += 1
 
