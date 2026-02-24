@@ -1,0 +1,2 @@
+from .preference_view import PreferenceView
+from .recomended_events_view import RecommendedEventsView
