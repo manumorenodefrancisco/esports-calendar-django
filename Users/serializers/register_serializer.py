@@ -5,7 +5,7 @@ from Users.models import User
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
-    username = serializers.CharField(required=True)
+    username = serializers.CharField(required=False)
     password1 = serializers.CharField(required=True, min_length=6)#write_only=True
     password2 = serializers.CharField(required=True, min_length=6)
 
