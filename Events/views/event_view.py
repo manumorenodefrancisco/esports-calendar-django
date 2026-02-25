@@ -133,12 +133,14 @@ class EventView(APIView):
             page += 1
 
         # PAST última hora
-        now = datetime.utcnow()
-        one_hour_ago = now - timedelta(minutes=60)
+        #now = datetime.utcnow()
+        #now.astimezone(timezone.utc).isoformat()
+        now = timezone.now()
+        five_days_ago = now - timedelta(days=5)
 
         page = 1
         while True:
-            url_matches = f"{self.PANDASCORE_BASE}/matches/past?range[end_at]={one_hour_ago.isoformat()}Z,{now.isoformat()}Z&page[size]=100&page[number]={page}&sort=scheduled_at"
+            url_matches = f"{self.PANDASCORE_BASE}/matches/past?range[end_at]={five_days_ago.isoformat()}Z,{now.isoformat()}Z&page[size]=100&page[number]={page}&sort=scheduled_at"
             response = requests.get(url_matches, headers=headers)
             if response.status_code != 200:
                 break
