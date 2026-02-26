@@ -17,23 +17,15 @@ class RecommendedEventsView(APIView):
         preferencias = Preferencia.objects.filter(usuario=user).order_by('-puntaje_interes')
 
         if not preferencias.exists():
-            return Response({"success": False, "errors": ["No hay preferencias para generar recomendaciones"]},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response({"success": False, "errors": ["No hay preferencias para generar recomendaciones"]},status=status.HTTP_400_BAD_REQUEST)
 
-        eventos_suscritos_ids = []
-        suscripciones_usuario = Suscripcion.objects.filter(usuario=user)
-        for suscripcion in suscripciones_usuario:
-            eventos_suscritos_ids.append(suscripcion.evento.id)
-
-        eventos_no_suscritos = Evento.objects.exclude(id__in=eventos_suscritos_ids)
-                # id__in -> nombre del campo = id, filtro o relación a aplicar = in
                 # exclude = WHERE NOT, lo contrario a filter()
-
+        eventos_no_suscritos = Evento.objects.exclude(suscripcion__usuario=user)
 
         eventos_recomendados = []
         for evento in eventos_no_suscritos:
             # para cada evento no suscrito del usuario (la gran mayoría), buscar posibles coincidencias
-            # con alguna preferencia del usuario
+                        # con alguna preferencia del usuario
             puntaje_total = 0
             for preferencia in preferencias:
                 puntaje = self._calcular_puntaje_recomendacion(evento, preferencia)
@@ -55,11 +47,10 @@ class RecommendedEventsView(APIView):
 
         return Response({
             "success": True,
-            "data": eventos_recomendados[:20],  # Limitar a 20 recomendaciones
-            "message": f"Se encontraron {len(eventos_recomendados)} eventos recomendados"
+            "data": eventos_recomendados[:20],  # Limitar a 20
         }, status=status.HTTP_200_OK)
 
-    def _calcular_puntaje_recomendacion(self, evento, preferencia): # -> basado en una preferencia
+    def _calcular_puntaje_recomendacion(self, evento, preferencia):
 
         puntaje = 0
 
@@ -69,10 +60,10 @@ class RecommendedEventsView(APIView):
         elif preferencia.tipo_preferencia == 'jugador' and evento.opponents:
             for opponent in evento.opponents:
                 if isinstance(opponent, dict) and opponent.get('name') == preferencia.valor:
-                    puntaje = preferencia.puntaje_interes * 0.3  # 30% del peso
+                    puntaje = preferencia.puntaje_interes * 0.3  # 30%
                     break
 
         elif preferencia.tipo_preferencia == 'liga' and evento.league_name == preferencia.valor:
-            puntaje = preferencia.puntaje_interes * 0.2  # 20% del peso
+            puntaje = preferencia.puntaje_interes * 0.2
 
         return puntaje

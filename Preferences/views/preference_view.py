@@ -16,14 +16,13 @@ class PreferenceView(APIView):
         serializer = PreferenciaSerializer(preferencias, many=True)
         return Response({"success": True, "data": serializer.data}, status=status.HTTP_200_OK)
 
-    def post(self, request): # -> Analizar suscripciones y generar/actualizar preferencias
+    def post(self, request): # genera automaticamente preferencias tras analizar las suscripciones
         user = request.user
-        suscripciones = Suscripcion.objects.filter(usuario=user).select_related('evento')
+        suscripciones = Suscripcion.objects.filter(usuario=user).select_related('evento') #-> por cada suscripción, traer su Evento entero
         
         if not suscripciones.exists():
             return Response({"success": False, "errors": ["No hay suscripciones para analizar con tu user así que no se pueden crear preferencias :)"]}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Eliminar preferencias anteriores para recalcular
         Preferencia.objects.filter(usuario=user).delete()
         
         # contadores

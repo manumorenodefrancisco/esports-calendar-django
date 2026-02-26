@@ -21,26 +21,17 @@ class SubscriptionView(APIView):
         if not evento_id:
             return Response({"success": False, "errors": ["El campo evento_id es obligatorio"]}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Verificar que el evento existe
         try:
             evento = Evento.objects.get(id=evento_id)
-        except Evento.DoesNotExist:
+        except Evento.DoesNotExist: #!exists()
             return Response({"success": False, "errors": ["El evento no existe"]}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Verificar si ya existe una suscripción para este usuario y evento
-        existing_subscription = Suscripcion.objects.filter(
-            usuario=request.user, 
-            evento=evento
-        ).first()
+        existing_subscription = Suscripcion.objects.filter(usuario=request.user, evento=evento).first()
 
         if existing_subscription:
             return Response({"success": False, "errors": ["Ya estás suscrito a este evento"]}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Crear la suscripción usando el serializer
-        serializer = SuscripcionSerializer(
-            data=request.data, 
-            context={'request': request}
-        )
+        serializer = SuscripcionSerializer(data=request.data, context={'user': request.user})
         
         if serializer.is_valid():
             subscription = serializer.save()
@@ -53,7 +44,7 @@ class SubscriptionView(APIView):
             return Response({"success": False, "errors": errores}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, evento_id):
-        # Verificar que el evento existe
+        # Verificar que existe
         try:
             evento = Evento.objects.get(id=evento_id)
         except Evento.DoesNotExist:

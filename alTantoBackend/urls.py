@@ -23,6 +23,7 @@ urlpatterns = [
     path("api/", include("Events.urls")),
     path("api/", include("Preferences.urls")),
     path("api/", include("Subscriptions.urls")),
+    path("api/", include("Anotaciones.urls"))
 ]
 
 """

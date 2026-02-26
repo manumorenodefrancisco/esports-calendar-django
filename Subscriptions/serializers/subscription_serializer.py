@@ -20,8 +20,8 @@ class SuscripcionSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "created_at"]
 
     def create(self, validated_data):
-        usuario = self.context["request"].user
-        evento_id = validated_data.pop("evento_id")
+        evento_id = validated_data.pop("evento_id") # evento_id no es un campo del modelo, lo borramos
+        usuario = self.context["user"]
 
         return Suscripcion.objects.create(
             usuario=usuario, evento_id=evento_id, **validated_data

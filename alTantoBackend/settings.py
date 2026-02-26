@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     'Users',
     'Events',
     'Preferences',
-    'Subscriptions'
+    'Subscriptions',
+    'Anotaciones'
 ]
 
 MIDDLEWARE = [
