@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,7 +24,8 @@ urlpatterns = [
     path("api/", include("Events.urls")),
     path("api/", include("Preferences.urls")),
     path("api/", include("Subscriptions.urls")),
-    path("api/", include("Anotaciones.urls"))
+    path("api/", include("Anotaciones.urls")),
+    path("api/notifications/", include("Notifications.urls")),
 ]
 
 """
