@@ -55,15 +55,15 @@ class RecommendedEventsView(APIView):
         puntaje = 0
 
         if preferencia.tipo_preferencia == 'videojuego' and evento.videogame_name == preferencia.valor:
-            puntaje = preferencia.puntaje_interes * 0.5  # 50% del peso
+            puntaje = preferencia.puntaje_interes + 5  # 50% del peso
 
         elif preferencia.tipo_preferencia == 'jugador' and evento.opponents:
             for opponent in evento.opponents:
                 if isinstance(opponent, dict) and opponent.get('name') == preferencia.valor:
-                    puntaje = preferencia.puntaje_interes * 0.3  # 30%
+                    puntaje = preferencia.puntaje_interes + 3  # 30%
                     break
 
         elif preferencia.tipo_preferencia == 'liga' and evento.league_name == preferencia.valor:
-            puntaje = preferencia.puntaje_interes * 0.2
+            puntaje = preferencia.puntaje_interes + 2
 
         return puntaje

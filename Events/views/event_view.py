@@ -18,6 +18,7 @@ class EventView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
+        self.sync_pandascore()
 
         query_eventos = Evento.objects.all()
 
@@ -86,10 +87,10 @@ class EventView(APIView):
 
         # limpiar matches viejos
         now = timezone.now()
-        one_hour_ago = now - timedelta(minutes=60)
+        five_days_ago = now - timedelta(days=5)
         Evento.objects.filter(
             status="finished",
-            end_at__lt=one_hour_ago
+            end_at__lt=five_days_ago
         ).delete()
 
         headers = {
