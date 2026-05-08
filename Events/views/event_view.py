@@ -86,13 +86,11 @@ class EventView(APIView):
     def sync_pandascore(self):
 
         # limpiar matches viejos
-        now = timezone.now()#.utc.isoformat()
-        #now = datetime.utcnow()
+        now = timezone.now()
         five_days_ago = now - timedelta(days=5)
-
         Evento.objects.filter(
             status="finished",
-            end_at__lt=five_days_ago#lt es less than
+            end_at__lt=five_days_ago
         ).delete()
 
         headers = {
