@@ -18,7 +18,7 @@ class EventView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-
+        self.sync_pandascore()
         query_eventos = Evento.objects.all()
 
         # FILTROS
@@ -66,7 +66,8 @@ class EventView(APIView):
             parsed_date = parse_date(date)
             if parsed_date:
                 query_eventos = query_eventos.filter(
-                    scheduled_at__date=parsed_date
+                    Q(scheduled_at__date=parsed_date) |
+                    Q(end_at__date=parsed_date)
                 )
 
         query_eventos = query_eventos.order_by('scheduled_at')[:500]
@@ -85,11 +86,13 @@ class EventView(APIView):
     def sync_pandascore(self):
 
         # limpiar matches viejos
-        now = timezone.now()
-        one_hour_ago = now - timedelta(minutes=60)
+        now = timezone.now()#.utc.isoformat()
+        #now = datetime.utcnow()
+        five_days_ago = now - timedelta(days=5)
+
         Evento.objects.filter(
             status="finished",
-            end_at__lt=one_hour_ago
+            end_at__lt=five_days_ago#lt es less than
         ).delete()
 
         headers = {
@@ -133,19 +136,16 @@ class EventView(APIView):
             page += 1
 
         # PAST última hora
-        #now = datetime.utcnow()
-        #now.astimezone(timezone.utc).isoformat()
-        now = timezone.now()
-        five_days_ago = now - timedelta(days=5)
 
         page = 1
         while True:
-            url_matches = f"{self.PANDASCORE_BASE}/matches/past?range[end_at]={five_days_ago.isoformat()}Z,{now.isoformat()}Z&page[size]=100&page[number]={page}&sort=scheduled_at"
+            url_matches = f"{self.PANDASCORE_BASE}/matches/past?range[end_at]={five_days_ago.isoformat()},{now.isoformat()}&page[size]=100&page[number]={page}&sort=scheduled_at"
             response = requests.get(url_matches, headers=headers)
             if response.status_code != 200:
                 break
 
             matches = response.json()
+            print(f"Past page {page}: {len(matches)} matches")
             if not matches:
                 break
 
@@ -204,6 +204,7 @@ class EventView(APIView):
         Evento.objects.update_or_create(
             external_id=match.get("id"),
             defaults={
+                "match_name": match.get("name") or f"Match {match.get('id')}",
                 "scheduled_at": match.get("scheduled_at"),
                 "videogame_name": match.get("videogame", {}).get("name"),
                 "league_name": match.get("league", {}).get("name"),

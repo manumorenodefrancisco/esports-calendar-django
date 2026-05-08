@@ -102,6 +102,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'OPTIONS': {
+            'timeout': 20,
+        }
     }
 }
 
@@ -164,6 +167,7 @@ MEDIA_ROOT = ASSETS_DIR / 'media'
 
 #DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #cors authorization
+#CORS_ALLOW_ALL_ORIGINS -> bloquear/admitir peticiones AJAX desde el navegador
 CORS_ALLOW_ORIGINS = [
     #"https://example.com",
     #"http://127.0.0.1:9000",

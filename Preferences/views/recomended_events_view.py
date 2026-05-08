@@ -66,4 +66,7 @@ class RecommendedEventsView(APIView):
         elif preferencia.tipo_preferencia == 'liga' and evento.league_name == preferencia.valor:
             puntaje = preferencia.puntaje_interes * 0.2
 
+        elif preferencia.tipo_preferencia == 'torneo' and evento.tournament_name == preferencia.valor:
+            puntaje = preferencia.puntaje_interes * 0.2
+
         return puntaje
