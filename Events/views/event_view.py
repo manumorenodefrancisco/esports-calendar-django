@@ -8,7 +8,7 @@ from django.utils.dateparse import parse_date
 
 from rest_framework import permissions, status
 from rest_framework.response import Response
-from rest_framework.views import APIView, View
+from rest_framework.views import APIView
 
 from Events.models import Evento
 from Events.serializers import EventoSerializer
@@ -18,7 +18,9 @@ class EventView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        self.sync_pandascore()
+        # 💡 Desactivado temporalmente para evitar el bloqueo 'database is locked' de SQLite.
+        # self.sync_pandascore()
+        
         query_eventos = Evento.objects.all()
 
         # FILTROS
@@ -71,7 +73,6 @@ class EventView(APIView):
                 )
 
         query_eventos = query_eventos.order_by('scheduled_at')[:500]
-
         serializer = EventoSerializer(query_eventos, many=True)
 
         return Response({
@@ -84,7 +85,6 @@ class EventView(APIView):
     TOKEN = settings.PANDASCORE_TOKEN
 
     def sync_pandascore(self):
-
         # limpiar matches viejos
         now = timezone.now()
         five_days_ago = now - timedelta(days=5)
@@ -134,7 +134,6 @@ class EventView(APIView):
             page += 1
 
         # PAST última hora
-
         page = 1
         while True:
             url_matches = f"{self.PANDASCORE_BASE}/matches/past?range[end_at]={five_days_ago.isoformat()},{now.isoformat()}&page[size]=100&page[number]={page}&sort=scheduled_at"
@@ -152,25 +151,6 @@ class EventView(APIView):
 
             page += 1
 
-        """# INCIDENTS
-        page = 1
-        while True:
-            incidents_url = f"{self.PANDASCORE_BASE}/incidents&page[size]=100&page[number]={page}"
-            response_incidents = requests.get(incidents_url, headers=headers)
-
-            if response_incidents.status_code == 200:
-                incidents = response_incidents.json()
-                for incident in incidents:
-                    object_id = incident.get("object_id")
-                    type_ = incident.get("type")
-
-                    if type_ in ["add", "update"]:
-                        self.traer_match_por_id(object_id)
-
-                    elif type_ == "delete":
-                        Evento.objects.filter(external_id=object_id).delete()
-            page += 1"""
-
     def traer_match_por_id(self, match_id):
         headers = {
             "Authorization": f"Bearer {self.TOKEN}"
@@ -184,9 +164,8 @@ class EventView(APIView):
             self.save_or_update_match(match)
 
     def save_or_update_match(self, match):
-
         opponents = []
-        for opp in match.get("opponents", []):  # (clave, default value)
+        for opp in match.get("opponents", []):
             opponent = opp.get("opponent")
             if opponent:
                 opponents.append({
