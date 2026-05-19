@@ -29,12 +29,12 @@ class InfoPerfil(models.Model):
     #avatar = models.ImageField(upload_to="avatars/", null=True, blank=True, verbose_name="Foto de perfil")
     #biografia
 
-    birthday = models.DateField(verbose_name="Fecha de nacimiento", help_text="(Obligatorio)")
+    birthday = models.DateField(verbose_name="Fecha de nacimiento", help_text="(Opcional)", null=True, blank=True)
     phone = models.CharField(max_length=11, verbose_name="Teléfono", help_text="(Opcional)", null=True, blank=True)
 
     #city = models.ForeignKey("CiudadModel", on_delete=models.SET_NULL, null=True, blank=True)
     country = models.CharField(max_length=3, choices=PaisesChoices.choices, default=PaisesChoices.SPAIN,
-                               verbose_name="País", help_text="(Obligatorio)")
+                               verbose_name="País", help_text="(Opcional)", null=True, blank=True)
 
     class Meta:
         db_table = "info_perfil"

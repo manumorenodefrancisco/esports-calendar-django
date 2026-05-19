@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from Users.models import User
+from Users.models import User, InfoPerfil
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -51,20 +51,21 @@ class RegisterSerializer(serializers.ModelSerializer):
         # }
         validated_data.pop("password2")
         password = validated_data.pop("password1")
-        # validate_data = {
-            # 'email': 'pepe@gmail.com',
-            # 'username': 'pepe_97',
-        # }
-        # password = "holamundo1"
 
-        #user = User.objects.create(
         user = User(
             email=validated_data["email"],
             username=validated_data.get("username")
         )
         user.set_password(password)
         user.save()
+
+        InfoPerfil.objects.create(
+            user=user,
+            birthday=None,
+            phone=None,
+            country="ES"
+        )
         return user
 
 
-#En el front, al registrar a un usuario lo que mando al back es: email, password1, password2, birthday,
+#En el front, al registrar a un usuario lo que mando al back es: email, password1, password2, username,...

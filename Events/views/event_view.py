@@ -18,8 +18,7 @@ class EventView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        # 💡 Desactivado temporalmente para evitar el bloqueo 'database is locked' de SQLite.
-        # self.sync_pandascore()
+        #self.sync_pandascore()
         
         query_eventos = Evento.objects.all()
 
