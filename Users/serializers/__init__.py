@@ -1,4 +1,3 @@
 from .register_serializer import RegisterSerializer
 from .login_serializer import LoginSerializer
-from .notification_token_serializer import NotificationTokenSerializer
 from .info_perfil_serializer import GetPerfilSerializer, UpdatePerfilSerializer

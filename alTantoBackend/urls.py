@@ -25,7 +25,6 @@ urlpatterns = [
     path("api/", include("Preferences.urls")),
     path("api/", include("Subscriptions.urls")),
     path("api/", include("Anotaciones.urls")),
-    path("api/notifications/", include("Notifications.urls")),
 ]
 
 """

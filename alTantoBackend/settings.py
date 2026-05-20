@@ -61,7 +61,6 @@ INSTALLED_APPS = [
     'Preferences',
     'Subscriptions',
     'Anotaciones',
-    'Notifications'
 ]
 
 MIDDLEWARE = [
