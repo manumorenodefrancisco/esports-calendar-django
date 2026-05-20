@@ -13,8 +13,8 @@ class SuscripcionSerializer(serializers.ModelSerializer):
             "id",
             "evento",
             "evento_id",
-            "recordatorio_1_dia",
             "recordatorio_1_hora",
+            "recordatorio_5_minutos",
             "created_at"
         ]
         read_only_fields = ["id", "created_at"]

@@ -6,8 +6,8 @@ class Suscripcion(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
 
-    recordatorio_1_dia = models.BooleanField(default=False)
     recordatorio_1_hora = models.BooleanField(default=False)
+    recordatorio_5_minutos = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
