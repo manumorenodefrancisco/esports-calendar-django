@@ -86,7 +86,7 @@ class EventView(APIView):
     def sync_pandascore(self):
         # limpiar matches viejos
         now = timezone.now()
-        five_days_ago = now - timedelta(days=5)
+        five_days_ago = now - timedelta(days=8)
         Evento.objects.filter(
             status="finished",
             end_at__lt=five_days_ago
@@ -116,7 +116,7 @@ class EventView(APIView):
         # UPCOMING
         contador_events = 0
         page = 1
-        while contador_events < 500:
+        while contador_events < 1000:
             url_matches = f"{self.PANDASCORE_BASE}/matches/upcoming?page[size]=100&page[number]={page}&sort=scheduled_at"
             response = requests.get(url_matches, headers=headers)
             if response.status_code != 200:
@@ -135,7 +135,7 @@ class EventView(APIView):
         # PAST última hora
         page = 1
         while True:
-            url_matches = f"{self.PANDASCORE_BASE}/matches/past?range[end_at]={five_days_ago.isoformat()},{now.isoformat()}&page[size]=100&page[number]={page}&sort=scheduled_at"
+            url_matches = f"{self.PANDASCORE_BASE}/matches/past?range[end_at]={five_days_ago.strftime('%Y-%m-%d')},{now.strftime('%Y-%m-%d')}&page[size]=100&page[number]={page}&sort=scheduled_at"
             response = requests.get(url_matches, headers=headers)
             if response.status_code != 200:
                 break

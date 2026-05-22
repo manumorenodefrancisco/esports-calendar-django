@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from django.utils import timezone
 
 from Events.models.event_model import Evento
 from Subscriptions.models import Suscripcion
@@ -20,7 +21,11 @@ class RecommendedEventsView(APIView):
             return Response({"success": False, "errors": ["No hay preferencias para generar recomendaciones"]},status=status.HTTP_400_BAD_REQUEST)
 
                 # exclude = WHERE NOT, lo contrario a filter()
-        eventos_no_suscritos = Evento.objects.exclude(suscripcion__usuario=user)
+        eventos_no_suscritos = Evento.objects.exclude(
+            suscripcion__usuario=user
+        ).filter(
+            scheduled_at__gte=timezone.now()
+        )#eventos solo futuros
 
         eventos_recomendados = []
         for evento in eventos_no_suscritos:
@@ -33,11 +38,24 @@ class RecommendedEventsView(APIView):
 
             if puntaje_total > 0:
                 evento_data = {
-                    'evento_id': evento.id,
-                    'match_name': evento.match_name,
-                    'videogame_name': evento.videogame_name,
-                    'league_name': evento.league_name,
+                    'id': evento.id,
+                    'external_id': evento.external_id,
                     'scheduled_at': evento.scheduled_at,
+                    'match_name': evento.match_name,
+                    'league_name': evento.league_name,
+                    'tournament_name': evento.tournament_name,
+                    'serie_full_name': evento.serie_full_name,
+                    'videogame_name': evento.videogame_name,
+                    'opponents': evento.opponents,  # IMPORTANTE: nombres de equipos/jugadores
+                    'match_type': evento.match_type,
+                    'number_of_games': evento.number_of_games,
+                    'status': evento.status,  # IMPORTANTE: estado del partido
+                    'results': evento.results,
+                    'winner_id': evento.winner_id,
+                    'streams': evento.streams,
+                    'end_at': evento.end_at,
+                    'created_at': evento.created_at,
+                    'updated_at': evento.updated_at,
                     'puntaje_recomendacion': puntaje_total
                 }
                 eventos_recomendados.append(evento_data)
